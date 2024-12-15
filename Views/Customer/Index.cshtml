@@ -1,0 +1,87 @@
+﻿@model CustomerLoanAllocation.Models.Customer.FetchCustomer.FetchCustomerDetails
+
+<div class="d-flex justify-content-between">
+    <div class="w-25 pe-3">
+        <div class="w-100">
+            <h2>Register Customer</h2>
+            <div>
+                <form asp-controller="Customer" asp-action="AddCustomer" method="post">
+                    <div>
+                        <label for="CustomerFirstName">Enter First Name</label>
+                        <input placeholder="Enter First Name" asp-for="CustomerDetails.CustomerFirstName" class="form-control" />
+                        <span asp-validation-for="CustomerDetails.CustomerFirstName" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label for="CustomerLastName">Enter Last Name</label>
+                        <input placeholder="Last Name" asp-for="CustomerDetails.CustomerLastName" class="form-control" />
+                        <span asp-validation-for="CustomerDetails.CustomerLastName" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label for="CustomerEmail">Enter Email</label>
+                        <input placeholder="Email" asp-for="CustomerDetails.CustomerEmail" type="email" class="form-control" />
+                        <span asp-validation-for="CustomerDetails.CustomerEmail" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label for="CustomerMobile">Enter Mobile Number</label>
+                        <input placeholder="986543210" type="number" asp-for="CustomerDetails.CustomerMobile" class="form-control" />
+                        <span asp-validation-for="CustomerDetails.CustomerMobile" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label for="CustomerAddress">Enter Address</label>
+                        <input placeholder="Address" type="text" asp-for="CustomerDetails.CustomerAddress" class="form-control" />
+                        <span asp-validation-for="CustomerDetails.CustomerAddress" class="text-danger"></span>
+                    </div>
+
+                    <div class="mt-3">
+                        <label>Choose Gender</label>
+                        <div>
+                            <input type="radio" asp-for="CustomerDetails.CustomerGender" value="Male" /> Male
+                            <input type="radio" asp-for="CustomerDetails.CustomerGender" value="Female" /> Female
+                            <input type="radio" asp-for="CustomerDetails.CustomerGender" value="Unspecified" /> Unspecified
+                        </div>
+                        <span asp-validation-for="CustomerDetails.CustomerGender" class="text-danger"></span>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="w-75">
+        <div class="w-100 ps-3">
+            <h2>Registered Customers Details</h2>
+            <div class="pt-3 mt-3">
+                @if (Model.CustomerDetailsList.Count > 0 && Model.CustomerDetailsList != null)
+                {
+                    <table class="table table-hover" border="1">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Mobile</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Gender</th>
+                                <th colspan="2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (CustomerLoanAllocation.Models.Customer.Core.CustomerDetails customerDetails in Model.CustomerDetailsList)
+                            {
+                                <tr>
+                                    <td>@customerDetails.CustomerFirstName @customerDetails.CustomerLastName</td>
+                                    <td>@customerDetails.CustomerMobile</td>
+                                    <td>@customerDetails.CustomerEmail</td>
+                                    <td>@customerDetails.CustomerAddress</td>
+                                    <td>@customerDetails.CustomerGender</td>
+                                    <td><a href="#">Edit</a></td>
+                                    <td><a href="#">Delete</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>

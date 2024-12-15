@@ -1,0 +1,64 @@
+﻿@model CustomerLoanAllocation.Models.Plans.CreatePlan.CreatePlanDetails
+
+<div class="d-flex justify-content-between w-100">
+    <div class="w-25 d-flex justify-content-center">
+        <div class="w-100">
+            <h2>Create New Plan</h2>
+
+            <form asp-action="CreatePlan" asp-controller="Plans" method="post">
+                <div>
+                    <label for="PlanName">Enter Plan Name</label>
+                    <input placeholder="Plan Name" type="text" asp-for="PlanDetails.PlanName" class="form-control" />
+                    <span asp-validation-for="PlanDetails.PlanName" class="text-danger"></span>
+                </div>
+
+                <div>
+                    <label for="DurationInMonth">Enter Duration in Month(s)</label>
+                    <input type="number" asp-for="PlanDetails.DurationInMonth" class="form-control" />
+                    <span asp-validation-for="PlanDetails.DurationInMonth" class="text-danger"></span>
+                </div>
+
+                <div>
+                    <label for="RateOfInterest">Enter Rate of Interest(%)</label>
+                    <input type="number" asp-for="PlanDetails.RateOfInterest" class="form-control" />
+                    <span asp-validation-for="PlanDetails.RateOfInterest" class="text-danger"></span>
+                </div>
+
+                <div class="mt-2">
+                    <button type="submit" class="btn btn-success w-100">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="w-75 d-flex justify-content-center">
+        <div class="w-100 ms-5 ps-5">
+            <h2>Display the existing Plans</h2>
+
+            @if (Model.PlanDetailsList != null && Model.PlanDetailsList.Count > 0)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Plan Name</th>
+                            <th>Duration (Month)</th>
+                            <th>Rate of Interest (%)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(CustomerLoanAllocation.Models.Plans.Core.PlanDetails planDetails in Model.PlanDetailsList)
+                        {
+                            <tr>
+                                <td>@planDetails.PlanName</td>
+                                <td>@planDetails.DurationInMonth</td>
+                                <td>@planDetails.RateOfInterest</td>
+                                <td><a href="#">Delete</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>

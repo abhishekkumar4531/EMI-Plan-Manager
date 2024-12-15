@@ -1,0 +1,72 @@
+﻿@model CustomerLoanAllocation.Models.CustomerAndLoan.CustomerAndLoanInput
+
+<h2>Loan Allocations to Registered Customers</h2>
+
+<div class="w-100 d-flex justify-content-between">
+    <div class="w-25">
+        <div class="w-100">
+            <form asp-action="" asp-controller="">
+                <div>
+                    <label for="CustomerId">Select Registred Customer</label>
+                    <select id="CustomerId" class="form-control">
+                        <option value="0">-- Select a Customer --</option>
+                        @foreach (CustomerLoanAllocation.Models.Customer.Core.CustomerDetails customerDetails in Model.CustomerDetailsList)
+                        {
+                            <option asp-for="@customerDetails.CustomerId">@customerDetails.CustomerFirstName @customerDetails.CustomerLastName</option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label for="PlamId">Select Available Plan</label>
+                    <select id="PlanId" class="form-control" onchange="fetchPlanDetails()">
+                        <option value="0">-- Select a Plan --</option>
+                        @foreach (CustomerLoanAllocation.Models.Plans.Core.PlanDetails planDetails in Model.PlanDetailsList)
+                        {
+                            <option value="@planDetails.PlanId">@planDetails.PlanName</option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label for="tenure">Duration (Months):</label>
+                    <input type="text" id="tenure" name="DurationInMonth" value="@Model.PlanDetails.DurationInMonth" class="form-control" readonly />
+                </div>
+
+                <div>
+                    <label for="roi">Rate of Interest:</label>
+                    <input type="text" id="roi" name="RateOfInterest" value="@Model.PlanDetails.RateOfInterest" class="form-control" readonly />
+                </div>
+
+                <div>
+                    <label for="loanAmount">Loan Amount:</label>
+                    <input type="number" id="loanAmount" name="LoanAmount" value="@Model.LoanAmount" class="form-control" />
+                </div>
+
+                <div>
+                    <label for="loanDate">Loan Date:</label>
+                    <input type="date" id="loanDate" name="LoanDate" value="@Model.LoanStartDate" class="form-control" onchange="calculateEMI()" />
+                </div>
+
+                <div>
+                    <label for="emiAmount">EMI Amount:</label>
+                    <input type="text" id="emiAmount" name="EMIAmount" value="@Model.EMIAmount" class="form-control" readonly />
+                </div>
+
+                <div class="mt-3">
+                    <button type="button" class="btn btn-primary w-100" onclick="generateEMITable()">Generate Table</button>
+                </div>
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-success w-100">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="w-75">
+        <div class="w-100 ms-5" id="displayCalculation">
+
+        </div>
+    </div>
+</div>
