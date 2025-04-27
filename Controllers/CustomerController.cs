@@ -1,4 +1,5 @@
 ﻿using CustomerLoanAllocation.DataAccess.Interfaces;
+using CustomerLoanAllocation.Models.Customer.Core;
 using CustomerLoanAllocation.Models.Customer.FetchCustomer;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,5 +39,37 @@ namespace CustomerLoanAllocation.Controllers
 
             return RedirectToAction("", "Customers");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> EditCustomer(FetchCustomerDetails fetchCustomerDetails)
+        {
+            bool isUpdated = await _customersDataAccess.UpdateCustomerDetails(fetchCustomerDetails.CustomerDetails);
+
+            if (isUpdated)
+            {
+                TempData["isCustomerUpdated"] = "Customer updated successfully.";
+            }
+            else
+            {
+                TempData["isCustomerUpdated"] = "Failed to update customer.";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCustomer([FromBody] int customerId)
+        {
+            bool isDeleted = await _customersDataAccess.DeleteCustomer(customerId);
+
+			if (isDeleted)
+			{
+				return Ok(new { message = "Customer deleted successfully." });
+			}
+			else
+			{
+				return BadRequest(new { message = "Failed to delete customer." });
+			}
+		}
     }
 }

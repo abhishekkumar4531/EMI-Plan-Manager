@@ -50,5 +50,41 @@ namespace CustomerLoanAllocation.Controllers
 
             return Json(createPlanDetails.PlanDetailsList[0]);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> EditPlan(CreatePlanDetails createPlanDetails)
+        {
+            bool isUpdated = false;
+
+            isUpdated = await _plansDataAccess.UpdatePlanDetails(createPlanDetails.PlanDetails);
+
+            if (isUpdated)
+            {
+                TempData["IsUpdated"] = createPlanDetails.PlanDetails.PlanName + " updated successfully.";
+            }
+            else
+            {
+                TempData["IsUpdated"] = createPlanDetails.PlanDetails.PlanName + " not updated!!!.";
+            }
+
+            return RedirectToAction("", "Plans");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeletePlan([FromBody] int planId)
+        {
+            bool isDeleted = false;
+
+            isDeleted = await _plansDataAccess.DeletePaln(planId);
+
+            if (isDeleted)
+            {
+                return Json(new { success = true, message = "Plan deleted successfully." });
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = "Failed to delete plan." });
+            }
+        }
     }
 }
