@@ -158,5 +158,100 @@ namespace CustomerLoanAllocation.DataAccess.Services
 
             return fetchCustomerDetails;
         }
+
+        public async Task<Boolean> UpdateCustomerDetails(CustomerDetails customerDetails)
+        {
+            bool updateStatus = false;
+
+            try
+            {
+                string CS = _configuration.GetConnectionString("ProjectDataBase");
+
+                string UpdateCustomerDetailsQuery =
+                @"
+                    UPDATE EMPLOYEES
+                    SET    EMPFIRSTNAME = @FIRSTNAME,
+                           EMPLASTNAME = @LASTNAME,
+                           EMPMOBILENUMBER = @MOBILENUMBER,
+                           EMPEMAILADDRESS = @EMAILADDRESS,
+                           EMPADDRESS = @ADDRESS,
+                           EMPIMAGEURL = @IMAGEURL,
+                           EMPGENDER = @GENDER
+                    WHERE  EMPID = @CUSTOMER_ID 
+                ";
+
+                using(SqlConnection con = new SqlConnection(CS))
+                {
+                    con.Open();
+
+                    using (SqlCommand cmd = new SqlCommand(UpdateCustomerDetailsQuery, con))
+                    {
+
+                        cmd.Parameters.AddWithValue("@FIRSTNAME", customerDetails.CustomerFirstName);
+                        cmd.Parameters.AddWithValue("@LASTNAME", customerDetails.CustomerLastName);
+                        cmd.Parameters.AddWithValue("@MOBILENUMBER", customerDetails.CustomerMobile);
+                        cmd.Parameters.AddWithValue("@EMAILADDRESS", customerDetails.CustomerEmail);
+                        cmd.Parameters.AddWithValue("@ADDRESS", customerDetails.CustomerAddress);
+                        cmd.Parameters.AddWithValue("@IMAGEURL", (customerDetails.CustomerImage == null) ? ' ' : customerDetails.CustomerImage);
+                        cmd.Parameters.AddWithValue("@GENDER", customerDetails.CustomerGender);
+                        cmd.Parameters.AddWithValue("@CUSTOMER_ID", customerDetails.CustomerId);
+
+                        int rows = cmd.ExecuteNonQuery();
+
+                        if (rows > 0)
+                        {
+                            updateStatus = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                updateStatus = true;
+            }
+
+            return updateStatus;
+        }
+
+        public async Task<Boolean> DeleteCustomer(int CustomerId)
+        {
+            bool deleteStatus = false;
+
+            try
+            {
+                string CS = _configuration.GetConnectionString("ProjectDataBase");
+
+                string DeleteCustomerQuery =
+                @"
+                    UPDATE EMPLOYEES
+                    SET    ACTIVE = 0
+                    WHERE  EMPID = @CUSTOMER_ID 
+                ";
+
+                using (SqlConnection con = new SqlConnection(CS))
+                {
+                    con.Open();
+
+                    using (SqlCommand cmd = new SqlCommand(DeleteCustomerQuery, con))
+                    {
+                        cmd.Parameters.AddWithValue("@CUSTOMER_ID", CustomerId);
+
+                        int rows = cmd.ExecuteNonQuery();
+
+                        if (rows > 0)
+                        {
+                            deleteStatus = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                deleteStatus = false;
+            }
+
+            return deleteStatus;
+        }
+
     }
 }

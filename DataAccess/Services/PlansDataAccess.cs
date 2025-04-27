@@ -136,5 +136,92 @@ namespace CustomerLoanAllocation.DataAccess.Services
 
             return createPlanDetailList;
         }
+
+        public async Task<Boolean> UpdatePlanDetails(PlanDetails planDetails)
+        {
+            bool updateStatus = false;
+
+            try
+            {
+                int rows = 0;
+                string CS = _configuration.GetConnectionString("ProjectDataBase");
+
+                string UpdatePlanDetailsQuery =
+                @"
+                    UPDATE STOREPLAN SET 
+                    PLANNAME = @PLAN_NAME,
+                    PLANDURATION = @PLAN_DURATION,
+                    RATEOFINTEREST = @RATE_OF_INTEREST
+                    WHERE ID = @PLAN_ID
+                ";
+
+                using (SqlConnection con = new SqlConnection(CS))
+                {
+                    con.Open();
+
+                    using (SqlCommand cmd = new SqlCommand(UpdatePlanDetailsQuery, con))
+                    {
+                        cmd.Parameters.AddWithValue("@PLAN_NAME", planDetails.PlanName);
+                        cmd.Parameters.AddWithValue("@PLAN_DURATION", planDetails.DurationInMonth);
+                        cmd.Parameters.AddWithValue("@RATE_OF_INTEREST", planDetails.RateOfInterest);
+                        cmd.Parameters.AddWithValue("@PLAN_ID", planDetails.PlanId);
+
+                        rows = cmd.ExecuteNonQuery();
+                    }
+                }
+
+                if (rows > 0)
+                {
+                    updateStatus = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                updateStatus = false;
+            }
+
+            return updateStatus;
+        }
+
+        public async Task<Boolean> DeletePaln(int planId)
+        {
+            bool deletePlanStatus = false;
+
+            try
+            {
+                int rows = 0;
+                string CS = _configuration.GetConnectionString("ProjectDataBase");
+
+                string DeletePlanQuery =
+                @"
+                    UPDATE STOREPLAN
+                    SET STATUS = 0
+                    WHERE ID = @PLAN_ID
+                ";
+
+                using(SqlConnection con = new SqlConnection(CS))
+                {
+                    con.Open();
+
+                    using(SqlCommand cmd = new SqlCommand(DeletePlanQuery, con))
+                    {
+                        cmd.Parameters.AddWithValue("@PLAN_ID", planId);
+
+                        rows = cmd.ExecuteNonQuery();
+                    }
+                }
+
+                if(rows > 0)
+                {
+                    deletePlanStatus = true;
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+
+            return deletePlanStatus;
+        }
     }
 }
